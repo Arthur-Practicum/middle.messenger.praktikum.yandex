@@ -2,6 +2,47 @@
   {{> BackLink link='Chat' }}
   <div class='flex-line-center flex-column-center full-width'>
       {{> Avatar path='/icons/avatar.svg' }}
-      <p class='username'>Иван</p>
+      <p class='username-title'>{{ user.first_name }}</p>
+      <form class="config-form flex-column-center full-width">
+          {{#if isPassChanging}}
+              {{#each passChangeFields}}
+                  <div class="flex-between-center underline full-width">
+                      <span class="config-form__label">{{this.span}}</span>
+                      <div class="config-form__input_wrapper">
+                          {{> Input id=this.id name=this.name type=this.type className='config-form__input' }}
+                      </div>
+                  </div>
+              {{/each}}
+          {{else}}
+          {{#each fields}}
+              <div class="flex-between-center underline full-width">
+                  <span class="config-form__label">{{this.span}}</span>
+                  <div class="config-form__input_wrapper">
+                      {{> Input id=this.id name=this.name type=this.type value=this.value readonly=../readonly className='config-form__input' }}
+                  </div>
+              </div>
+          {{/each}}
+          {{/if}}
+      </form>
+
+      {{#if canSave}}
+          <div class="full-width config-actions_btn-wrapper">
+              {{> Button id='save-user' text='Сохранить' className='form-button full-width' disable=isDisable }}
+          </div>
+      {{/if}}
+
+      {{#unless canSave}}
+          <div class="flex config-actions full-width">
+              <div class="underline">
+                  {{> Button id='change-user' text='Изменить данные' className="config-actions__btn" }}
+              </div>
+              <div class="underline">
+                  {{> Button id='change-password' text='Изменить пароль' className="config-actions__btn" }}
+              </div>
+              <div class="underline">
+                  {{> Button id='exit-button' text='Выход' className="config-actions__btn text-red" }}
+              </div>
+          </div>
+      {{/unless}}
   </div>
 </div>

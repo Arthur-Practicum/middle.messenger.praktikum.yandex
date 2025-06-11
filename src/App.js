@@ -1,6 +1,7 @@
 import Handlebars from 'handlebars';
 import * as Pages from './pages/index';
 import pageConfig from './utils/pageConfig';
+import { userStore } from './store/userStore.js';
 import Heading from './components/heading/heading.js';
 import Input from './components/input/input.js';
 import Button from './components/button/button.js';
@@ -20,9 +21,11 @@ Handlebars.registerPartial('Avatar', Avatar);
 export default class App {
   constructor() {
     this.state = {
-      currentPage: 'Login',
+      currentPage: 'Config',
       formValid: false,
-      user: {},
+      user: userStore.get(),
+      userEdit: false,
+      passwordChange: false,
     };
     this.appElement = document.getElementById('app');
   }
@@ -43,7 +46,10 @@ export default class App {
 
     if (pageConf && pageConf.validate) {
       const { inputs, submitId, check } = pageConf.validate;
-      const elems = inputs
+      const inputIds =
+        typeof inputs === 'function' ? inputs(this.state) : inputs;
+
+      const elems = inputIds
         .map((id) => document.getElementById(id))
         .filter(Boolean);
 
@@ -57,12 +63,54 @@ export default class App {
       onInput();
     }
 
-    this.appElement.querySelectorAll('.link').forEach((link) => {
+    const loginBtn = document.getElementById('login-submit');
+    const registerBtn = document.getElementById('registration-submit');
+    const changeUserBtn = document.getElementById('change-user');
+    const changePassBtn = document.getElementById('change-password');
+    const saveUserBtn = document.getElementById('save-user');
+    const exitBtn = document.getElementById('exit-button');
+
+    loginBtn?.addEventListener('click', () => this.auth());
+    registerBtn?.addEventListener('click', () => this.auth());
+    changeUserBtn?.addEventListener('click', () => this.editUser(true));
+    changePassBtn?.addEventListener('click', () => this.changePass(true));
+    saveUserBtn?.addEventListener('click', () => this.saveUserConfig());
+    exitBtn?.addEventListener('click', () => this.exit());
+
+    document.querySelectorAll('.link').forEach((link) => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
         this.changePage(e.target.dataset.page);
       });
     });
+  }
+
+  auth() {
+    this.state.currentPage = 'Chat';
+    this.render();
+  }
+
+  editUser(value) {
+    this.state.userEdit = value;
+    this.render();
+  }
+
+  changePass(value) {
+    this.state.passwordChange = value;
+    this.render();
+  }
+
+  saveUserConfig() {
+    if (!this.state.formValid) return;
+
+    this.state.userEdit = false;
+    this.state.passwordChange = false;
+    this.render();
+  }
+
+  exit() {
+    this.state.currentPage = 'Login';
+    this.render();
   }
 
   changePage(page) {
