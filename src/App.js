@@ -21,7 +21,7 @@ Handlebars.registerPartial('Avatar', Avatar);
 export default class App {
   constructor() {
     this.state = {
-      currentPage: 'Config',
+      currentPage: 'Login',
       formValid: false,
       user: userStore.get(),
       userEdit: false,
