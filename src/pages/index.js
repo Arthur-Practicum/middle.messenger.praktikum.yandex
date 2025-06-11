@@ -1,6 +1,6 @@
-export { Login } from './loginPage/login.js';
-export { Registration } from './registrationPage/registration.js';
-export { Chat } from './chatPage/chat.js';
-export { Error } from './errorPage/error.js';
-export { NotFound } from './notFoundPage/notFound.js';
-export { Config } from './userConfigPage/userConfig.js';
+export { Login } from './login/login.js';
+export { Registration } from './registration/registration.js';
+export { Chat } from './chat/chat.js';
+export { Error } from './error/error.js';
+export { NotFound } from './not-found/not-found.js';
+export { Config } from './config/config.js';

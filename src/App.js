@@ -1,100 +1,63 @@
 import Handlebars from 'handlebars';
 import * as Pages from './pages/index';
-
-import Header from './components/header/header.js';
+import pageConfig from './utils/pageConfig';
+import Heading from './components/heading/heading.js';
 import Input from './components/input/input.js';
 import Button from './components/button/button.js';
 import Link from './components/link/link.js';
 import Footer from './components/footer/footer.js';
-import ArrowBack from './components/arrowBack/arrowBack.js';
+import BackLink from './components/backLink/backLink.js';
+import Avatar from './components/avatar/avatar.js';
 
-Handlebars.registerPartial('Header', Header);
+Handlebars.registerPartial('Heading', Heading);
 Handlebars.registerPartial('Input', Input);
 Handlebars.registerPartial('Button', Button);
 Handlebars.registerPartial('Link', Link);
 Handlebars.registerPartial('Footer', Footer);
-Handlebars.registerPartial('ArrowBack', ArrowBack);
+Handlebars.registerPartial('BackLink', BackLink);
+Handlebars.registerPartial('Avatar', Avatar);
 
 export default class App {
   constructor() {
     this.state = {
-      currentPage: 'config',
+      currentPage: 'Login',
       formValid: false,
+      user: {},
     };
     this.appElement = document.getElementById('app');
   }
 
   render() {
-    let template;
-    if (this.state.currentPage === 'login') {
-      template = Handlebars.compile(Pages.Login);
-      this.appElement.innerHTML = template({
-        isDisable: !this.state.formValid,
-      });
-    } else if (this.state.currentPage === 'registration') {
-      template = Handlebars.compile(Pages.Registration);
-      this.appElement.innerHTML = template({
-        isDisable: !this.state.formValid,
-      });
-    } else if (this.state.currentPage === 'notFound') {
-      template = Handlebars.compile(Pages.NotFound);
-      this.appElement.innerHTML = template({});
-    } else if (this.state.currentPage === 'error') {
-      template = Handlebars.compile(Pages.Error);
-      this.appElement.innerHTML = template({});
-    } else if (this.state.currentPage === 'chat') {
-      template = Handlebars.compile(Pages.Chat);
-      this.appElement.innerHTML = template({});
-    } else if (this.state.currentPage === 'config') {
-      template = Handlebars.compile(Pages.Config);
-      this.appElement.innerHTML = template({});
-    }
+    const pageKey = this.state.currentPage;
+    const templateString = Pages[pageKey] || Pages.NotFound;
+    const template = Handlebars.compile(templateString);
+    const pageConf = pageConfig[pageKey] || {};
+    const context = pageConf.context ? pageConf.context(this.state) : {};
+    this.appElement.innerHTML = template(context);
     this.attachEventListeners();
   }
 
   attachEventListeners() {
-    if (this.state.currentPage === 'login') {
-      const inputs = ['login-input', 'password-input'].map((id) =>
-        document.getElementById(id),
-      );
+    const pageKey = this.state.currentPage;
+    const pageConf = pageConfig[pageKey];
 
-      const validateForm = () => {
-        this.state.formValid = inputs.every(
-          (input) => input && input.value.trim() !== '',
-        );
-        this.updateButtonState();
+    if (pageConf && pageConf.validate) {
+      const { inputs, submitId, check } = pageConf.validate;
+      const elems = inputs
+        .map((id) => document.getElementById(id))
+        .filter(Boolean);
+
+      const onInput = () => {
+        const values = elems.map((el) => el.value);
+        this.state.formValid = check(values);
+        this.updateButtonState(submitId);
       };
 
-      inputs.forEach(
-        (input) => input && input.addEventListener('input', validateForm),
-      );
-      validateForm();
-    } else if (this.state.currentPage === 'registration') {
-      const inputs = [
-        'email-input',
-        'login-input',
-        'name-input',
-        'second_name-input',
-        'phone-input',
-        'password-input',
-        'password-check-input',
-      ].map((id) => document.getElementById(id));
-
-      const validateForm = () => {
-        this.state.formValid =
-          inputs.every((input) => input && input.value.trim() !== '') &&
-          inputs[5].value === inputs[6].value;
-        this.updateButtonState('registration-submit');
-      };
-
-      inputs.forEach(
-        (input) => input && input.addEventListener('input', validateForm),
-      );
-      validateForm();
+      elems.forEach((el) => el.addEventListener('input', onInput));
+      onInput();
     }
 
-    const formFooterLinks = document.querySelectorAll('.form-footer-link');
-    formFooterLinks.forEach((link) => {
+    this.appElement.querySelectorAll('.link').forEach((link) => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
         this.changePage(e.target.dataset.page);
@@ -104,6 +67,7 @@ export default class App {
 
   changePage(page) {
     this.state.currentPage = page;
+    this.state.formValid = false;
     this.render();
   }
 
