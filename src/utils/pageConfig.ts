@@ -62,9 +62,9 @@ const pageConfig = {
     validate: {
       inputs: ['login-input', 'password-input'],
       submitId: 'login-submit',
-      check: (values) => values.every((v) => v.trim() !== ''),
+      check: (values: any) => values.every((v: any) => v.trim() !== ''),
     },
-    context: (state) => ({ isDisable: !state.formValid }),
+    context: (state: any) => ({ isDisable: !state.formValid }),
   },
   Registration: {
     validate: {
@@ -78,14 +78,14 @@ const pageConfig = {
         'password-check-input',
       ],
       submitId: 'registration-submit',
-      check: (values) => values.every((v) => v.trim() !== ''),
+      check: (values: any) => values.every((v: any) => v.trim() !== ''),
     },
-    context: (state) => ({ isDisable: !state.formValid }),
+    context: (state: any) => ({ isDisable: !state.formValid }),
   },
   Chat: {},
   Config: {
     validate: {
-      inputs: (state) => {
+      inputs: (state: any) => {
         const ids = [];
         if (state.userEdit) {
           ids.push(...fields.map((f) => f.id));
@@ -96,9 +96,9 @@ const pageConfig = {
         return ids;
       },
       submitId: 'save-user',
-      check: (values) => values.every((v) => v.trim() !== ''),
+      check: (values: any) => values.every((v: any) => v.trim() !== ''),
     },
-    context: (state) => ({
+    context: (state: any) => ({
       user: state.user,
       readonly: !state.userEdit,
       isPassChanging: state.passwordChange,

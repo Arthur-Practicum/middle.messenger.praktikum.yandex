@@ -1,6 +1,6 @@
 import Handlebars from 'handlebars';
 import * as Pages from './pages/index';
-import pageConfig from './utils/pageConfig';
+import pageConfig from './utils/pageConfig.js';
 import { userStore } from './store/userStore.js';
 import Heading from './components/heading/heading.js';
 import Input from './components/input/input.js';
