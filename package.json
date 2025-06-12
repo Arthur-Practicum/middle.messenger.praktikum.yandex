@@ -9,8 +9,8 @@
     "build": "vite build",
     "start": "vite build && node server.cjs",
     "preview": "vite preview",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix"
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "repository": {
     "type": "git",
@@ -27,6 +27,9 @@
   },
   "homepage": "https://github.com/Arthur-Practicum/middle.messenger.praktikum.yandex#readme",
   "devDependencies": {
+    "typescript": "^5.8.3",
+    "@typescript-eslint/eslint-plugin": "^8.34.0",
+    "@typescript-eslint/parser": "^8.34.0",
     "autoprefixer": "^10.4.21",
     "eslint": "^9.28.0",
     "eslint-config-prettier": "^10.1.5",
